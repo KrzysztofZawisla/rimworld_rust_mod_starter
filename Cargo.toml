@@ -1,0 +1,9 @@
+[package]
+name = "rimworld_rust_mod_starter"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
