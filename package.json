@@ -1,0 +1,12 @@
+{
+  "name": "rimworld_rust_mod_starter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/KrzysztofZawisla/rimworld_rust_mod_starter",
+  "author": "KrzysztofZawisla <zawislakrzysztof.zk@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "cargo build --release",
+    "build-development": "cargo build"
+  }
+}
