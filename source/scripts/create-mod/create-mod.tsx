@@ -1,11 +1,24 @@
 import prompts from "prompts";
 import { mkdir } from "fs/promises";
 import { existsSync } from "fs";
+import { join } from "path";
+import { $ } from "zx";
+import { platform } from "os";
 
 (async () => {
-  const { value: values }: { value: string[] } = await prompts({
+  const os: NodeJS.Platform = platform();
+  if (os === "win32") {
+    $.shell = "cmd";
+    $.prefix = "";
+  }
+  const { nameOfTheMod }: { nameOfTheMod: string } = await prompts({
+    type: "text",
+    name: "nameOfTheMod",
+    message: "What is the name of the mod?",
+  });
+  const { versions }: { versions: string[] } = await prompts({
     type: "multiselect",
-    name: "value",
+    name: "versions",
     message: "Pick a target version",
     choices: [
       {
@@ -21,10 +34,25 @@ import { existsSync } from "fs";
     ],
     initial: 0,
   });
-  const foldersToCreate = values.map(async (value) => {
-    if (!existsSync(value)) {
-      await mkdir(value);
+  if (!existsSync(nameOfTheMod)) {
+    await mkdir(nameOfTheMod);
+  }
+  const aboutFolder = join(nameOfTheMod, "About");
+  if (!existsSync(aboutFolder)) {
+    await mkdir(aboutFolder);
+  }
+  const foldersToCreate = versions.map(async (value) => {
+    const folderPath = join(nameOfTheMod, value);
+    if (!existsSync(folderPath)) {
+      await mkdir(folderPath);
     }
   });
   await Promise.all(foldersToCreate);
+  const sourcesFolder = join(nameOfTheMod, "Sources");
+  if (!existsSync(sourcesFolder)) {
+    await mkdir(sourcesFolder);
+  }
+  await $([
+    `cd ${sourcesFolder} && dotnet new classlib --target-framework-override net4.7.2`,
+  ] as unknown as TemplateStringsArray);
 })();
