@@ -4,6 +4,7 @@ import { existsSync } from "fs";
 import { join } from "path";
 import { $ } from "zx";
 import { platform } from "os";
+import { camelCase, startCase } from "lodash";
 
 (async () => {
   const os: NodeJS.Platform = platform();
@@ -52,7 +53,8 @@ import { platform } from "os";
   if (!existsSync(sourcesFolder)) {
     await mkdir(sourcesFolder);
   }
+  const solutionName = startCase(camelCase(nameOfTheMod)).split(" ").join("");
   await $([
-    `cd ${sourcesFolder} && dotnet new classlib --target-framework-override net4.7.2`,
+    `cd ${sourcesFolder} && dotnet new classlib -n ${solutionName} --target-framework-override net4.7.2`,
   ] as unknown as TemplateStringsArray);
 })();
