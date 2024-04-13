@@ -1,10 +1,11 @@
 import prompts from "prompts";
-import { mkdir } from "fs/promises";
+import { mkdir, writeFile } from "fs/promises";
 import { existsSync } from "fs";
 import { join } from "path";
 import { $ } from "zx";
 import { platform } from "os";
 import { camelCase, startCase } from "lodash";
+import { Builder } from "xml2js";
 
 (async () => {
   const os: NodeJS.Platform = platform();
@@ -42,13 +43,22 @@ import { camelCase, startCase } from "lodash";
   if (!existsSync(aboutFolder)) {
     await mkdir(aboutFolder);
   }
+  const xmlObject: { [key: string]: unknown } = {};
+  const xmlBuilder = new Builder({
+    rootName: "loadFolders",
+  });
   const foldersToCreate = versions.map(async (value) => {
+    const xmlKey = `v${value}`;
+    xmlObject[xmlKey] = { li: value };
     const folderPath = join(nameOfTheMod, value);
     if (!existsSync(folderPath)) {
       await mkdir(folderPath);
     }
   });
   await Promise.all(foldersToCreate);
+  const xml = xmlBuilder.buildObject(xmlObject);
+  const loadFoldersFile = join(nameOfTheMod, "LoadFolders.xml");
+  writeFile(loadFoldersFile, xml);
   const sourcesFolder = join(nameOfTheMod, "Sources");
   if (!existsSync(sourcesFolder)) {
     await mkdir(sourcesFolder);

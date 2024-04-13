@@ -17,6 +17,7 @@
     "@types/lodash": "^4.17.0",
     "@types/prompts": "^2.4.9",
     "@types/react": "^18.2.76",
+    "@types/xml2js": "^0.4.14",
     "cross-env": "^7.0.3",
     "ink": "^3.2.0",
     "lodash": "^4.17.21",
@@ -27,6 +28,7 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5",
     "typescript-transform-paths": "^3.4.7",
+    "xml2js": "^0.6.2",
     "zx": "4.2.0"
   }
 }
