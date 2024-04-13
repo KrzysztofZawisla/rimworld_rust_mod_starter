@@ -47,8 +47,21 @@ import { Builder } from "xml2js";
   const xmlBuilder = new Builder({
     rootName: "loadFolders",
   });
+  const xmlBuilderAboutFileObject = {
+    name: "test",
+    author: "test",
+    packageId: "test",
+    url: "",
+    supportedVersions: [] as unknown[],
+  };
+  const xmlBuilderAboutFile = new Builder({
+    rootName: "ModMetaData",
+  });
   const foldersToCreate = versions.map(async (value) => {
     const xmlKey = `v${value}`;
+    xmlBuilderAboutFileObject.supportedVersions.push({
+      value,
+    });
     xmlObject[xmlKey] = { li: value };
     const folderPath = join(nameOfTheMod, value);
     if (!existsSync(folderPath)) {
@@ -57,8 +70,11 @@ import { Builder } from "xml2js";
   });
   await Promise.all(foldersToCreate);
   const xml = xmlBuilder.buildObject(xmlObject);
+  const aboutXML = xmlBuilderAboutFile.buildObject(xmlBuilderAboutFileObject);
   const loadFoldersFile = join(nameOfTheMod, "LoadFolders.xml");
+  const aboutFile = join(nameOfTheMod, "About", "About.xml");
   writeFile(loadFoldersFile, xml);
+  writeFile(aboutFile, aboutXML);
   const sourcesFolder = join(nameOfTheMod, "Sources");
   if (!existsSync(sourcesFolder)) {
     await mkdir(sourcesFolder);
